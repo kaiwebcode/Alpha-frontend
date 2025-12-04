@@ -190,7 +190,7 @@ export const EMICalculator = () => {
                 size="lg"
                 className="w-full py-6 rounded-xl font-semibold text-white 
                 bg-gradient-to-r from-purple-700 to-purple-900 
-                hover:shadow-lg hover:shadow-purple-800/40 transition-all duration-300"
+                hover:shadow-lg hover:shadow-purple-800/40 transition-all duration-300 cursor-pointer"
               >
                 💰 Check eligibility
               </Button>

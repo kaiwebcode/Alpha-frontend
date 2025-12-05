@@ -1,120 +1,89 @@
-import { motion } from "framer-motion";
-import { CarOverview } from "../components/CarOverview";
-import { EMICalculator } from "../components/EMICalculator";
+"use client";
+
+import { useState } from "react";
+// import { Header } from "./components/Header";
+// import CarShowcase from "./components/CarShowcase";
+// import Footer from "./components/footer";
+
+// ---- IMPORT IMAGES ----
+import img1 from "../assets/image1.png";
+import img2 from "../assets/image2.png";
+import img3 from "../assets/image3.png";
+import img4 from "../assets/image4.png";
 import { Header } from "../components/Header";
-import { HeroCarousel } from "../components/HeroCarousel";
-import { View360Button } from "../components/View360Button";
-import { useEffect, useState } from "react";
+import CarShowcase from "../components/CarShowcase";
+import EMICalculator from "../components/EMICalculator";
+import CarDetails from "../components/CarDetails";
 import Footer from "../components/footer";
+// import { EMICalculator } from "./components/EMICalculator";
+// import CarDetails from "./components/CarDetails";
+// import EMICalculator from "./components/EMICalculator";
+// Add your new image here
+// import img5 from "./assets/image5.png";
 
-const Index = () => {
-  const [scrollY, setScrollY] = useState(0);
+// ---- CAR DATA ----
+const carData = {
+  id: 1,
+  name: "BMW i7",
+  model: "2024",
+  price: 1060800,
+  downPrice: 265200,
+  year: 2024,
+  mileage: "5 km",
+  fuelType: "Electric",
+  transmission: "Automatic",
+  images: [img1, img2, img3, img4], // <-- Updated
+  features: [
+    "Panoramic Roof",
+    "Premium Sound System",
+    "Leather Seats",
+    "Climate Control",
+    "5G Connectivity",
+  ],
+  description:
+    "Experience luxury and performance in the all-new BMW i7. Combining elegant design with cutting-edge electric technology.",
+};
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
+// ---- PAGE ----
+export default function Home() {
+  const [activeTab, setActiveTab] = useState<"showcase" | "details">(
+    "showcase"
+  );
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Smooth parallax calculations
-  const topBlobTranslate = scrollY * 0.08; // small upward movement
-  const bottomBlobTranslate = scrollY * -0.06; // subtle opposite direction
   return (
-    <div className="min-h-screen bg-[#0D0F12] text-white scroll-smooth">
+    <div className="min-h-screen bg-background">
       <Header />
+      <main className="pt-20">
+        <CarShowcase car={carData} />
 
-      <div id="home" className="fixed inset-0 pointer-events-none z-0">
-        <div
-          className="absolute top-0 right-0 w-96 h-96 bg-linear-to-br from-blue-500/20 to-purple-500/15 rounded-full blur-3xl animate-float"
-          style={{
-            transform: `translateY(${topBlobTranslate}px)`,
-            transition: "transform 0.05s linear",
-          }}
-        ></div>
-
-        <div
-          className="absolute bottom-0 left-0 w-96 h-96 bg-linear-to-tr from-purple-500/20 to-pink-500/15 rounded-full blur-3xl animate-float"
-          style={{
-            transform: `translateY(${bottomBlobTranslate}px)`,
-            transition: "transform 0.05s linear",
-            animationDelay: "1s",
-          }}
-        ></div>
-      </div>
-
-      <main className="container mx-auto px-4 py-12 space-y-28">
-        {/* HERO SECTION */}
-        <section className="space-y-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="text-center space-y-4"
+        <div className="flex justify-center gap-4 py-12 px-4">
+          <button
+            onClick={() => setActiveTab("showcase")}
+            className={`px-8 py-3 rounded-xl font-semibold transition-all duration-300 ${
+              activeTab === "showcase"
+                ? "bg-purple-600 text-white shadow-lg shadow-purple-500/40 scale-[1.02]"
+                : "bg-[#1a1a1a] text-gray-300 border border-white/10 hover:border-purple-500/40 hover:text-white hover:scale-[1.02] cursor-pointer"
+            }`}
           >
-            <h1
-              className="
-                text-5xl md:text-7xl font-extrabold tracking-tight
-                bg-gradient-to-r from-purple-400 via-purple-500 to-cyan-300
-                bg-clip-text text-transparent drop-shadow-[0_0_15px_#3A8DFF66]
-              "
-            >
-              Discover Your Dream Car
-            </h1>
+            EMI Calculator
+          </button>
 
-            <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto">
-              Premium vehicles. Transparent pricing. Smooth financing options.
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
+          <button
+            onClick={() => setActiveTab("details")}
+            className={`px-8 py-3 rounded-xl font-semibold transition-all duration-300 ${
+              activeTab === "details"
+                ? "bg-purple-600 text-white shadow-lg shadow-purple-500/40 scale-[1.02]"
+                : "bg-[#1a1a1a] text-gray-300 border border-white/10 hover:border-purple-500/40 hover:text-white hover:scale-[1.02] cursor-pointer"
+            }`}
           >
-            <HeroCarousel />
-          </motion.div>
+            Car Details
+          </button>
+        </div>
 
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            className="flex justify-center"
-          >
-            <View360Button />
-          </motion.div>
-        </section>
-
-        {/* PRICE CALCULATOR */}
-        <section id="calculator" className="py-16">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-          >
-            <EMICalculator />
-          </motion.div>
-        </section>
-
-        {/* CAR OVERVIEW */}
-        <section id="cars" className="py-16">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-          >
-            <CarOverview />
-          </motion.div>
-        </section>
+        {activeTab === "showcase" && <EMICalculator car={carData} />}
+        {activeTab === "details" && <CarDetails car={carData} />}
       </main>
-      {/* FOOTER */}
       <Footer />
     </div>
   );
-};
-
-export default Index;
+}

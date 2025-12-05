@@ -1,208 +1,230 @@
-import { useState } from "react";
-import { ChevronDown } from "lucide-react";
-import { Slider } from "./ui/slider";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Button } from "./ui/button";
-import { motion } from "framer-motion";
+// Updated EMI Calculator - Premium Purple Theme (Classy + Clean)
+"use client";
 
-export const EMICalculator = () => {
-  const [loanAmount, setLoanAmount] = useState(1060800);
-  const [downPayment, setDownPayment] = useState(265200);
+import { useState, useMemo } from "react";
+
+interface Car {
+  price: number;
+  downPrice: number;
+}
+
+export default function EMICalculator({ car }: { car: Car }) {
+  const [loanAmount, setLoanAmount] = useState(car.price * 0.75);
+  const [downPayment, setDownPayment] = useState(car.downPrice);
   const [duration, setDuration] = useState(66);
+  const [rateOfInterest] = useState(8.5);
 
-  const calculateEMI = () => {
-    const principal = loanAmount - downPayment;
-    const rate = 9.5 / 100 / 12;
-    const emi =
-      (principal * rate * Math.pow(1 + rate, duration)) /
-      (Math.pow(1 + rate, duration) - 1);
-    return Math.round(emi);
-  };
+  const monthlyEMI = useMemo(() => {
+    const principal = loanAmount;
+    const ratePerMonth = rateOfInterest / 100 / 12;
+    const numerator =
+      principal * ratePerMonth * Math.pow(1 + ratePerMonth, duration);
+    const denominator = Math.pow(1 + ratePerMonth, duration) - 1;
+    return Math.round(numerator / denominator);
+  }, [loanAmount, duration, rateOfInterest]);
 
-  const emi = calculateEMI();
+  const totalPayment = monthlyEMI * duration;
+  const totalInterest = totalPayment - loanAmount;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, ease: "easeOut" }}
-    >
-      <Card className="w-full max-w-2xl mx-auto rounded-2xl bg-[#0f0f12] backdrop-blur-xl border border-white/5 shadow-2xl shadow-purple-700">
-        
-        {/* HEADER */}
-        <CardHeader className="py-6 border-b border-white/5 bg-gradient-to-r from-purple-900/20 via-purple-800/10 to-transparent">
-          <CardTitle className="text-3xl font-bold tracking-tight text-white drop-shadow">
-            EMI Calculator
-          </CardTitle>
-        </CardHeader>
+    <section className="py-16 px-4 max-w-6xl mx-auto">
+      <style>{`
+        /* CLASSY PURPLE SLIDER */
+        input[type='range'] {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 100%;
+          height: 8px;
+          background: #262626;
+          border-radius: 50px;
+          cursor: pointer;
+          outline: none;
+        }
 
-        <CardContent className="p-8 space-y-10">
-          
-          {/* ------------------- LOAN AMOUNT ------------------- */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="space-y-4"
-          >
-            <div className="flex justify-between items-center">
-              <label className="text-lg font-semibold text-gray-300">
-                Loan Amount
-              </label>
+        /* Track */
+        input[type='range']::-webkit-slider-runnable-track {
+          height: 8px;
+          background: linear-gradient(to right, #5b21b6, #7c3aed); /* purple gradient */
+          border-radius: 50px;
+        }
 
-              <motion.span
-                key={loanAmount}
-                initial={{ opacity: 0, y: -5 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-purple-200 bg-clip-text text-transparent"
-              >
-                ₹ {loanAmount.toLocaleString("en-IN")}
-              </motion.span>
-            </div>
+        /* Thumb */
+        input[type='range']::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          width: 20px;
+          height: 20px;
+          background: white;
+          border-radius: 50%;
+          border: 3px solid #7c3aed; /* purple border */
+          box-shadow: 0 0 12px rgba(124, 58, 237, 0.7); /* purple glow */
+          margin-top: -6px;
+        }
 
-            <Slider
-              value={[loanAmount]}
-              onValueChange={(value) => setLoanAmount(value[0])}
-              min={100000}
-              max={1326000}
-              step={10000}
-            />
+        input[type='range']::-moz-range-thumb {
+          width: 20px;
+          height: 20px;
+          background: white;
+          border-radius: 50%;
+          border: 3px solid #7c3aed;
+          box-shadow: 0 0 12px rgba(124, 58, 237, 0.7);
+        }
+      `}</style>
 
-            <div className="flex justify-between text-sm text-gray-500">
-              <span>₹1,00,000</span>
-              <span>₹13,26,000</span>
-            </div>
-          </motion.div>
+      <div className="bg-[#0c0c0f] rounded-3xl p-10 border border-purple-900 shadow-[0_0_60px_rgba(124,58,237,0.15)]">
+        <h2 className="text-4xl font-bold mb-2 text-white tracking-wide">
+          EMI Calculator
+        </h2>
+        <p className="text-gray-400 mb-12 text-lg">
+          Elegant and premium financing calculator experience.
+        </p>
 
-          {/* ------------------- DOWN PAYMENT ------------------- */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="space-y-4"
-          >
-            <div className="flex justify-between items-center">
-              <label className="text-lg font-semibold text-gray-300">
-                Down Payment*
-              </label>
-
-              <motion.span
-                key={downPayment}
-                initial={{ opacity: 0, y: -5 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-2xl font-bold text-green-400"
-              >
-                ₹ {downPayment.toLocaleString("en-IN")}
-              </motion.span>
-            </div>
-
-            <Slider
-              value={[downPayment]}
-              onValueChange={(value) => setDownPayment(value[0])}
-              min={0}
-              max={1226000}
-              step={5000}
-            />
-
-            <div className="flex justify-between text-sm text-gray-500">
-              <span>₹0</span>
-              <span>₹12,26,000</span>
-            </div>
-          </motion.div>
-
-          {/* ------------------- DURATION ------------------- */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="space-y-4"
-          >
-            <div className="flex justify-between items-center">
-              <label className="text-lg font-semibold text-gray-300">
-                Loan Duration
-              </label>
-
-              <motion.span
-                key={duration}
-                initial={{ opacity: 0, y: -5 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-2xl font-bold text-purple-400"
-              >
-                {duration} Months
-              </motion.span>
-            </div>
-
-            <Slider
-              value={[duration]}
-              onValueChange={(value) => setDuration(value[0])}
-              min={12}
-              max={84}
-              step={6}
-            />
-
-            <div className="flex justify-between text-sm text-gray-500">
-              <span>12 Months</span>
-              <span>84 Months</span>
-            </div>
-          </motion.div>
-
-          {/* ------------------- EMI RESULT ------------------- */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.97 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6 }}
-            className="pt-8 border-t border-white/5"
-          >
-            <div className="text-center space-y-6">
-              
-              {/* EMI Number */}
-              <motion.div
-                key={emi}
-                initial={{ opacity: 0, y: 12, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 0.5 }}
-              >
-                <span className="text-5xl font-extrabold bg-gradient-to-r from-green-300 to-green-500 bg-clip-text text-transparent">
-                  ₹{emi.toLocaleString("en-IN")}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14">
+          {/* Left Controls */}
+          <div className="space-y-10">
+            {/* Loan Amount */}
+            <div>
+              <div className="flex justify-between mb-3">
+                <label className="text-lg font-semibold text-gray-200">
+                  Loan Amount
+                </label>
+                <span className="text-3xl font-bold text-purple-400">
+                  ₹{(loanAmount / 100000).toFixed(2)}L
                 </span>
-                <span className="text-lg text-gray-400 ml-2">per month</span>
-              </motion.div>
+              </div>
 
-              {/* Breakdown Button */}
-              <button className="flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors mx-auto font-medium">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path d="M3 3v18h18" />
-                  <path d="m19 9-5 5-4-4-3 3" />
-                </svg>
-                View Loan Breakup
-                <ChevronDown className="h-4 w-4" />
-              </button>
+              <input
+                type="range"
+                min={car.price * 0.3}
+                max={car.price}
+                value={loanAmount}
+                onChange={(e) => setLoanAmount(Number(e.target.value))}
+              />
 
-              {/* CTA Button */}
-              <Button
-                size="lg"
-                className="w-full py-6 rounded-xl font-semibold text-white 
-                bg-gradient-to-r from-purple-700 to-purple-900 
-                hover:shadow-lg hover:shadow-purple-800/40 transition-all duration-300 cursor-pointer"
-              >
-                💰 Check eligibility
-              </Button>
+              <div className="flex justify-between text-gray-500 text-sm mt-2">
+                <span>₹{((car.price * 0.3) / 100000).toFixed(2)}L</span>
+                <span>₹{(car.price / 100000).toFixed(2)}L</span>
+              </div>
+            </div>
 
-              <p className="text-xs text-gray-500 leading-relaxed">
-                *Rate of interest may vary based on credit profile.  
-                **Processing fee & other charges are not included.
+            {/* Down Payment */}
+            <div>
+              <div className="flex justify-between mb-3">
+                <label className="text-lg font-semibold text-gray-200">
+                  Down Payment
+                </label>
+                <span className="text-3xl font-bold text-purple-400">
+                  ₹{(downPayment / 100000).toFixed(2)}L
+                </span>
+              </div>
+
+              <input
+                type="range"
+                min={0}
+                max={car.price * 0.7}
+                value={downPayment}
+                onChange={(e) => setDownPayment(Number(e.target.value))}
+              />
+
+              <div className="flex justify-between text-gray-500 text-sm mt-2">
+                <span>₹0</span>
+                <span>
+                  ₹{((car.price * 0.7) / 100000).toFixed(2)}L
+                </span>
+              </div>
+            </div>
+
+            {/* Duration */}
+            <div>
+              <div className="flex justify-between mb-3">
+                <label className="text-lg font-semibold text-gray-200">
+                  Loan Duration
+                </label>
+                <span className="text-3xl font-bold text-purple-400">
+                  {duration} Months
+                </span>
+              </div>
+
+              <input
+                type="range"
+                min={12}
+                max={84}
+                value={duration}
+                onChange={(e) => setDuration(Number(e.target.value))}
+              />
+
+              <div className="flex justify-between text-gray-500 text-sm mt-2">
+                <span>12 Months</span>
+                <span>84 Months</span>
+              </div>
+            </div>
+
+            {/* Interest Box */}
+            <div className="bg-[#1a1a1d] border border-purple-900 rounded-2xl p-5">
+              <p className="text-sm text-gray-300">
+                <span className="font-semibold text-white">
+                  Rate of Interest:
+                </span>{" "}
+                {rateOfInterest}% p.a.
+              </p>
+              <p className="text-xs text-gray-400 mt-2">
+                *May vary based on credit profile
               </p>
             </div>
-          </motion.div>
-        </CardContent>
-      </Card>
-    </motion.div>
+          </div>
+
+          {/* Right Side Result */}
+          <div className="space-y-6">
+            <div className="bg-[#1a1a1d] rounded-2xl p-8 border border-purple-900 shadow-lg">
+              <p className="text-gray-400 text-sm mb-2 font-medium">
+                Monthly EMI Payment
+              </p>
+              <p className="text-5xl font-bold text-purple-400">
+                ₹{(monthlyEMI / 1000).toFixed(2)}K
+              </p>
+              <p className="text-gray-400 text-sm">per month</p>
+            </div>
+
+            {/* Breakdown */}
+            <div className="space-y-4">
+              <div className="flex justify-between p-5 bg-[#111] rounded-xl border border-purple-900">
+                <span className="text-gray-200 font-medium">
+                  Total Amount Payable
+                </span>
+                <span className="text-gray-100 font-bold">
+                  ₹{(totalPayment / 100000).toFixed(2)}L
+                </span>
+              </div>
+
+              <div className="flex justify-between p-5 bg-[#111] rounded-xl border border-purple-900">
+                <span className="text-gray-200 font-medium">
+                  Interest Payable
+                </span>
+                <span className="text-purple-400 font-bold">
+                  ₹{(totalInterest / 100000).toFixed(2)}L
+                </span>
+              </div>
+
+              <div className="flex justify-between p-5 bg-[#111] rounded-xl border border-purple-900">
+                <span className="text-gray-200 font-medium">
+                  Principal Amount
+                </span>
+                <span className="text-purple-400 font-bold">
+                  ₹{(loanAmount / 100000).toFixed(2)}L
+                </span>
+              </div>
+            </div>
+
+            {/* Buttons */}
+            <button className="w-full py-4 px-6 bg-purple-600 text-white rounded-xl text-lg font-bold hover:bg-purple-700 transition-all cursor-pointer">
+              Check Eligibility
+            </button>
+
+            <button className="w-full py-3 px-6 bg-[#1a1a1d] text-white rounded-lg border border-purple-900 hover:bg-[#2a2a2a] transition-all cursor-pointer">
+              View Loan Breakup
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
   );
-};
+}

@@ -13,6 +13,7 @@ import img1 from "../assets/image1.png";
 import img2 from "../assets/image2.png";
 import img3 from "../assets/image3.png";
 import img4 from "../assets/image4.png";
+import { FAQ } from "../components/FAQ";
 
 // ---- CAR DATA ----
 const carData = {
@@ -101,6 +102,9 @@ export default function Home() {
           {activeTab === "showcase" && <EMICalculator car={carData} />}
           {activeTab === "details" && <CarDetails car={carData} />}
         </div>
+
+        <FAQ />
+        
       </main>
 
       <Footer />

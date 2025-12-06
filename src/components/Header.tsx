@@ -1,5 +1,5 @@
 import { Car, Menu, X } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
 export const Header = () => {
@@ -57,7 +57,7 @@ export const Header = () => {
           </div>
         </motion.div>
 
-        {/* NAV LINKS - DESKTOP */}
+        {/* DESKTOP NAV */}
         <nav className="hidden md:flex items-center gap-10">
           {navLinks.map((link, i) => (
             <motion.a
@@ -74,7 +74,6 @@ export const Header = () => {
             >
               {link.label}
 
-              {/* Underline Animation */}
               <span
                 className="
                   absolute bottom-0 left-0 w-0 h-0.5
@@ -86,7 +85,7 @@ export const Header = () => {
           ))}
         </nav>
 
-        {/* RIGHT AUTH BUTTONS */}
+        {/* DESKTOP AUTH BUTTONS */}
         <div className="hidden md:flex items-center gap-4">
           <button className="px-4 py-2 text-gray-300 hover:text-white text-sm transition-all cursor-pointer">
             Sign In
@@ -105,7 +104,7 @@ export const Header = () => {
           </button>
         </div>
 
-        {/* MOBILE MENU BUTTON */}
+        {/* MOBILE MENU TOGGLE */}
         <button
           onClick={() => setOpen(!open)}
           className="md:hidden text-white"
@@ -114,50 +113,59 @@ export const Header = () => {
         </button>
       </div>
 
-      {/* MOBILE DROPDOWN MENU */}
-      {open && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="
-            md:hidden flex flex-col gap-4 px-6 py-5
-            bg-[#0b0d12]/95 backdrop-blur-xl
-            border-t border-white/5
-            shadow-[0_0_30px_#00000088]
-          "
-        >
-          {navLinks.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="
-                text-gray-300 text-sm py-2
-                hover:text-white transition-all
-                border-b border-white/5
-              "
-            >
-              {link.label}
-            </a>
-          ))}
+      {/* MOBILE DROPDOWN OVERLAY */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.25 }}
+            className="
+              md:hidden fixed top-[72px] left-0 w-full
+              bg-black/70 backdrop-blur-2xl
+              border-t border-white/10
+              px-6 py-5 z-40
+              shadow-[0_0_40px_#000000aa]
+            "
+          >
+            {/* MOBILE NAV LINKS */}
+            <div className="flex flex-col gap-4">
+              {navLinks.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  className="
+                    text-gray-300 text-sm py-2
+                    hover:text-white transition-all
+                    border-b border-white/5
+                  "
+                  onClick={() => setOpen(false)}
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
 
-          {/* MOBILE AUTH BUTTONS */}
-          <div className="flex flex-col gap-3 pt-2">
-            <button className="py-2 text-gray-300 hover:text-white text-sm">
-              Sign In
-            </button>
+            {/* MOBILE AUTH BUTTONS */}
+            <div className="flex flex-col gap-3 pt-4">
+              <button className="py-2 text-gray-300 hover:text-white text-sm">
+                Sign In
+              </button>
 
-            <button
-              className="
-                py-3 rounded-lg text-white text-sm
-                bg-gradient-to-r from-blue-500 to-purple-500
-                shadow-[0_0_20px_#7c3aed66]
-              "
-            >
-              Get Started
-            </button>
-          </div>
-        </motion.div>
-      )}
+              <button
+                className="
+                  py-3 rounded-lg text-white text-sm
+                  bg-gradient-to-r from-blue-500 to-purple-500
+                  shadow-[0_0_20px_#7c3aed66]
+                "
+              >
+                Get Started
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.header>
   );
 };

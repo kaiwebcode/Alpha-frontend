@@ -1,5 +1,3 @@
-"use client"
-
 interface CarCarouselProps {
   images: string[]
   currentIndex: number

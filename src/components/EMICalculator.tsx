@@ -29,7 +29,7 @@ export default function EMICalculator({ car }: { car: Car }) {
   const totalInterest = totalPayment - loanAmount;
 
   return (
-    <section className="py-16 px-4 max-w-6xl mx-auto">
+    <section className="py-16 px-1 max-w-6xl mx-auto">
 
       {/* Custom Purple Slider Styles */}
       <style>{`

@@ -117,7 +117,7 @@ export default function CarShowcase({ car }: { car: Car }) {
               onClick={() => setShow360(!show360)}
               className="absolute top-6 right-6 z-20 px-5 py-2.5 bg-gradient-to-r from-purple-600 to-purple-800 text-white rounded-full font-semibold hover:shadow-2xl hover:shadow-purple-500/60 transition-all shadow-lg hover:scale-105 active:scale-95 text-sm cursor-pointer"
             >
-              {show360 ? "← Back" : "360°"}
+              {show360 ? "← Back" : "View 360°"}
             </button>
 
             {/* COUNTER */}

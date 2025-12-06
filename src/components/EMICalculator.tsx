@@ -1,7 +1,5 @@
-// Updated EMI Calculator - Premium Purple Theme (Classy + Clean)
-"use client";
-
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
+import { motion, useInView } from "framer-motion";
 
 interface Car {
   price: number;
@@ -13,6 +11,10 @@ export default function EMICalculator({ car }: { car: Car }) {
   const [downPayment, setDownPayment] = useState(car.downPrice);
   const [duration, setDuration] = useState(66);
   const [rateOfInterest] = useState(8.5);
+
+  // 🔥 Scroll animation hook
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   const monthlyEMI = useMemo(() => {
     const principal = loanAmount;
@@ -28,8 +30,9 @@ export default function EMICalculator({ car }: { car: Car }) {
 
   return (
     <section className="py-16 px-4 max-w-6xl mx-auto">
+
+      {/* Custom Purple Slider Styles */}
       <style>{`
-        /* CLASSY PURPLE SLIDER */
         input[type='range'] {
           -webkit-appearance: none;
           appearance: none;
@@ -40,37 +43,34 @@ export default function EMICalculator({ car }: { car: Car }) {
           cursor: pointer;
           outline: none;
         }
-
-        /* Track */
         input[type='range']::-webkit-slider-runnable-track {
           height: 8px;
-          background: linear-gradient(to right, #5b21b6, #7c3aed); /* purple gradient */
+          background: linear-gradient(to right, #5b21b6, #7c3aed);
           border-radius: 50px;
         }
-
-        /* Thumb */
         input[type='range']::-webkit-slider-thumb {
           -webkit-appearance: none;
           width: 20px;
           height: 20px;
           background: white;
           border-radius: 50%;
-          border: 3px solid #7c3aed; /* purple border */
-          box-shadow: 0 0 12px rgba(124, 58, 237, 0.7); /* purple glow */
-          margin-top: -6px;
-        }
-
-        input[type='range']::-moz-range-thumb {
-          width: 20px;
-          height: 20px;
-          background: white;
-          border-radius: 50%;
           border: 3px solid #7c3aed;
           box-shadow: 0 0 12px rgba(124, 58, 237, 0.7);
+          margin-top: -6px;
         }
       `}</style>
 
-      <div className="bg-[#0c0c0f] rounded-3xl p-10 border border-purple-900 shadow-[0_0_60px_rgba(124,58,237,0.15)]">
+      {/* 🔥 Scroll Animation Wrapper */}
+      <motion.div
+        ref={ref}
+        initial={{ opacity: 0, y: 80 }}
+        animate={isInView ? { opacity: 1, y: 0 } : {}}
+        transition={{
+          duration: 0.8,
+          ease: "easeOut",
+        }}
+        className="bg-[#0c0c0f] rounded-3xl p-10 border border-purple-900 shadow-[0_0_60px_rgba(124,58,237,0.15)]"
+      >
         <h2 className="text-4xl font-bold mb-2 text-white tracking-wide">
           EMI Calculator
         </h2>
@@ -78,9 +78,16 @@ export default function EMICalculator({ car }: { car: Car }) {
           Elegant and premium financing calculator experience.
         </p>
 
+        {/* Inner Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-14">
-          {/* Left Controls */}
-          <div className="space-y-10">
+
+          {/* LEFT CONTROLS — Scroll Animation */}
+          <motion.div
+            initial={{ opacity: 0, y: 100 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
+            className="space-y-10"
+          >
             {/* Loan Amount */}
             <div>
               <div className="flex justify-between mb-3">
@@ -99,7 +106,6 @@ export default function EMICalculator({ car }: { car: Car }) {
                 value={loanAmount}
                 onChange={(e) => setLoanAmount(Number(e.target.value))}
               />
-
               <div className="flex justify-between text-gray-500 text-sm mt-2">
                 <span>₹{((car.price * 0.3) / 100000).toFixed(2)}L</span>
                 <span>₹{(car.price / 100000).toFixed(2)}L</span>
@@ -124,12 +130,9 @@ export default function EMICalculator({ car }: { car: Car }) {
                 value={downPayment}
                 onChange={(e) => setDownPayment(Number(e.target.value))}
               />
-
               <div className="flex justify-between text-gray-500 text-sm mt-2">
                 <span>₹0</span>
-                <span>
-                  ₹{((car.price * 0.7) / 100000).toFixed(2)}L
-                </span>
+                <span>₹{((car.price * 0.7) / 100000).toFixed(2)}L</span>
               </div>
             </div>
 
@@ -151,7 +154,6 @@ export default function EMICalculator({ car }: { car: Car }) {
                 value={duration}
                 onChange={(e) => setDuration(Number(e.target.value))}
               />
-
               <div className="flex justify-between text-gray-500 text-sm mt-2">
                 <span>12 Months</span>
                 <span>84 Months</span>
@@ -170,10 +172,16 @@ export default function EMICalculator({ car }: { car: Car }) {
                 *May vary based on credit profile
               </p>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Right Side Result */}
-          <div className="space-y-6">
+          {/* RIGHT RESULT BOXES — Scroll Animation */}
+          <motion.div
+            initial={{ opacity: 0, y: 120 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
+            className="space-y-6"
+          >
+            {/* EMI Box */}
             <div className="bg-[#1a1a1d] rounded-2xl p-8 border border-purple-900 shadow-lg">
               <p className="text-gray-400 text-sm mb-2 font-medium">
                 Monthly EMI Payment
@@ -222,9 +230,9 @@ export default function EMICalculator({ car }: { car: Car }) {
             <button className="w-full py-3 px-6 bg-[#1a1a1d] text-white rounded-lg border border-purple-900 hover:bg-[#2a2a2a] transition-all cursor-pointer">
               View Loan Breakup
             </button>
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }
